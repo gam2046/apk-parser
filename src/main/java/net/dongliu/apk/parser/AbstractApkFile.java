@@ -194,8 +194,12 @@ public abstract class AbstractApkFile implements Closeable {
         if (data == null) {
             throw new ParserException("Manifest file not found");
         }
-        transBinaryXml(data, xmlStreamer);
-        this.manifestXml = xmlTranslator.getXml();
+        try {
+            transBinaryXml(data, xmlStreamer);
+            this.manifestXml = xmlTranslator.getXml();
+        } catch (net.dongliu.apk.parser.exception.ParserException e) {
+            this.manifestXml = new String(data);
+        }
         this.apkMeta = apkTranslator.getApkMeta();
         this.iconPaths = apkTranslator.getIconPaths();
         manifestParsed = true;
